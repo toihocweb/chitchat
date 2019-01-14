@@ -4,24 +4,53 @@ import './index.css';
 import App from './app/App';
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom'
 import Register from './auth/Register';
 import Login from './auth/Login';
+import { composeWithDevTools } from 'redux-devtools-extension'
+import { createStore } from 'redux'
+import { Provider, connect } from 'react-redux'
+import {setUser} from './actions'
+import firebase from 'firebase'
+import rootReducer from './reducers';
+import Spinner from './Spinner'
+const store = createStore(rootReducer, composeWithDevTools())
 
-const Root = () => (
-    <Router>
-        <Switch>
-            <Route path='/' exact component={App} />
-            <Route path='/register' component={Register} />
-            <Route path='/login' component={Login} />
-        </Switch>
-    </Router>
+class Root extends React.Component {
+    componentDidMount() {
+        firebase.auth().onAuthStateChanged(user => {
+            if(user){
+                
+                this.props.setUser(user)
+                this.props.history.push('/')
+            }
+        })
+    }
 
-)
+
+    render() {
+        return this.props.isLoading ? <Spinner /> : (
+            <Switch>
+                <Route path='/' exact component={App} />
+                <Route path='/register' component={Register} />
+                <Route path='/login' component={Login} />
+            </Switch>
+        );
+    }
+}
+const mapStateFromProps = state => ({
+    isLoading : state.user.isLoading
+})
+const RootwithAuth = withRouter(connect(mapStateFromProps , { setUser })(Root))
 
 
-
-ReactDOM.render(<Root />, document.getElementById('root'));
+ReactDOM.render(
+    <Provider store={store}>
+        <Router>
+            <RootwithAuth />
+        </Router>
+    </Provider>
+    , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
