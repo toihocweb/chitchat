@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
+import Logout from '../Logout/Logout';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-       APP
-      </div>
+     <Logout />
     );
   }
 }

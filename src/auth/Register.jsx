@@ -12,7 +12,8 @@ class Register extends Component {
         repassword: '',
         errors: [],
         isSuccess : false,
-        usersRefs : firebase.database().ref("users") 
+        usersRefs : firebase.database().ref("users"),
+        isLoading : false
     }
 
     handleChange = (e) => {
@@ -23,7 +24,9 @@ class Register extends Component {
 
     handleSunmit = (e) => {
         e.preventDefault()
+       
         if (this.isFormValid()) {
+            this.setState({isLoading : true})
             firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then(createdUser => {
                 createdUser.user.updateProfile({
                     displayName : this.state.username,
@@ -35,11 +38,13 @@ class Register extends Component {
                     password: '',
                     repassword: '',
                     errors: [],
-                    isSuccess : true
+                    isSuccess : true,
+
                 })
             }).catch(err => {
                 this.setState({
-                    errors : this.state.errors.concat(err)
+                    errors : this.state.errors.concat(err),
+                    isLoading : false
                 })
             })
         }
@@ -104,7 +109,7 @@ class Register extends Component {
                             <Form.Input iconPosition='left' placeholder="Password" icon='lock' name='password' onChange={this.handleChange} value={password} type='password' />
                             <Form.Input iconPosition='left' placeholder="Re-Password" icon='undo' name='repassword' onChange={this.handleChange} value={repassword} type='password' />
                             {this.state.errors.length > 0 && this.state.errors.map((err,index) => (<Message  key={index} color='red' content={err.message}/>))}
-                            <Button fluid color='orange'> Submit</Button>
+                            <Button fluid color='orange' loading={this.state.isLoading} disabled={this.state.isLoading}> Submit</Button>
                         </Form>
                         <Message warning>
                             <Icon name='help' />
