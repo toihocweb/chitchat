@@ -1,13 +1,37 @@
 import React, { Component } from 'react';
 import './App.css';
-import Logout from '../Logout/Logout';
+import ColorPanel from '../components/ColorPanel/ColorPanel';
+import Messages from '../components/Messages/Messages';
+import { Grid } from '../../node_modules/semantic-ui-react';
+import { connect } from 'react-redux'
+import SidePanel from '../components/SidePanel/SidePanel';
+import MetaPanel from '../components/MetaPanel/MetaPanel';
 
 class App extends Component {
+
   render() {
+    const {currentUser ,  currentChannel } = this.props
     return (
-     <Logout />
+      <Grid columns="equal" className='app' style={{ background: '#eee' }} >
+        <ColorPanel />
+        <SidePanel key = {currentUser && currentUser.uid} currentUser={currentUser} />
+
+        <Grid.Column style={{marginLeft : '320px'}}>
+          <Messages currentUser = {currentUser} key = {currentChannel && currentChannel.id} currentChannel={currentChannel}  />
+        </Grid.Column>
+        <Grid.Column width={4}>
+          <MetaPanel />
+        </Grid.Column>
+      </Grid>
+
+
     );
   }
 }
-
-export default App;
+const mapStateToProps = state => (
+  {
+    currentUser: state.user.currentUser,
+    currentChannel : state.channel.currentChannel
+  }
+)
+export default connect(mapStateToProps)(App);
