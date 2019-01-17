@@ -7,8 +7,13 @@ class MessageForm extends Component {
     isLoading: false,
     errors: [],
     channel: this.props.currentChannel,
-    user: this.props.currentUser
+    user: this.props.currentUser,
+    modal : false
   }
+
+    openModal = () => {
+          this.setState({modal : true})
+    }
 
   handleChange = (e) => {
     this.setState({
@@ -31,7 +36,7 @@ class MessageForm extends Component {
 
   handleSubmit = () => {
     const { messageRef } = this.props
-    const { message, errors, isLoading, channel } = this.state
+    const { message, errors, channel } = this.state
     if (message) {
       // send message
       this.setState({ isLoading: true })

@@ -20,7 +20,6 @@ class Login extends Component {
     e.preventDefault()
     if (this.isFormValid()) {
       firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((signedUser) => {
-        console.log(signedUser)
       }).catch(err => {
         console.log(err)
       })

@@ -11,3 +11,12 @@
     right: 1em;
     z-index: 200px;
 }
+
+.message__self{
+    border-left: 2px solid orange;
+    padding-left: 8px;
+}
+
+.ui.comments.messages{
+    max-width: 100%;
+}
