@@ -20,3 +20,11 @@
 .ui.comments.messages{
     max-width: 100%;
 }
+
+.message__image{
+    padding: 1em;
+}
+
+.progress_bar{
+    margin: 0.3em 0 0 0 !important;
+}

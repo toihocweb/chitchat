@@ -3,10 +3,11 @@ import { Segment, Header, Icon, Input } from '../../../node_modules/semantic-ui-
 
 class MessagesHeader extends Component {
     render() {
+        const {displayChannelName} = this.props
         return (
             <Segment clearing>
                 <Header fluid='true' as='h2' floated='left' style={{ marginBottom: 0 }}>
-                    <span>Channel <Icon name={"star outline"} color='black' /></span>
+                    <span>{displayChannelName} <Icon name={"star outline"} color='black' /></span>
                     <Header.Subheader>2 Users </Header.Subheader>
                 </Header>
                 <Header floated='right'>
