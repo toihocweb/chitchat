@@ -13,7 +13,8 @@ class Messages extends Component {
     channel: this.props.currentChannel,
     user: this.props.currentUser,
     messages: [],
-    messageLoading: true
+    messageLoading: true,
+    numUniqueUsers : 0
   }
 
   componentDidMount() {
@@ -35,17 +36,31 @@ class Messages extends Component {
         messageLoading: false,
         messages: loadedMessages
       })
+      this.countUniqueUsers(loadedMessages)
     })
+   
   }
 
   displayChannelName = channel => channel ? `#${channel.channelName}` : ''
+  
+  countUniqueUsers = messages => {
+  const UniquUsers = messages.reduce((acc, message) => {
+    if(!acc.includes(message.user.name)){
+      acc.push(message.user.name)
+    }
+    return acc
+  },[]) 
+     
+    const numberUsers = UniquUsers.length
 
+    this.setState({numUniqueUsers : numberUsers})
+  }
 
   render() {
-    const { messageRef, channel, user, messages } = this.state
+    const { messageRef, channel, user, messages,numUniqueUsers } = this.state
     return (
       <React.Fragment>
-        <MessagesHeader displayChannelName={this.displayChannelName(channel)}/>
+        <MessagesHeader numUniqueUsers={numUniqueUsers} displayChannelName={this.displayChannelName(channel)}/>
         <Segment>
           <Comment.Group className='messages'>
             {messages.length > 0 && messages.map(msg => (<Msg key={msg.timestamp} message={msg} user={this.state.user} />))}
