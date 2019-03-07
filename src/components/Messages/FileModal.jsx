@@ -39,7 +39,7 @@ class FileModal extends Component {
             <Modal open={modal} onClose={closeModal}>
                 <Modal.Header>Select an Image File</Modal.Header>
                 <Modal.Content>
-                    <Input fluid type='file' name='file' label='File types: jpg, png' onChange={this.addFile} />
+                    <Input fluid type='file' name='file' label='File types: jpg, png' onChange={this.addFile}/>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button color='green' onClick={this.sendFile} icon inverted><Icon name='checkmark' />Send</Button>

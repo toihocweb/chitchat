@@ -13,14 +13,14 @@ class App extends Component {
     const {currentUser ,  currentChannel } = this.props
     return (
       <Grid columns="equal" className='app' style={{ background: '#eee' }} >
-        <ColorPanel />
+        <ColorPanel currentUser={currentUser}  />
         <SidePanel key = {currentUser && currentUser.uid} currentUser={currentUser} />
 
         <Grid.Column style={{marginLeft : '320px'}}>
           <Messages currentUser = {currentUser} key = {currentChannel && currentChannel.id} currentChannel={currentChannel}  />
         </Grid.Column>
         <Grid.Column width={4}>
-          <MetaPanel />
+          <MetaPanel key={currentChannel && currentChannel.id} currentChannel={currentChannel}/>
         </Grid.Column>
       </Grid>
 

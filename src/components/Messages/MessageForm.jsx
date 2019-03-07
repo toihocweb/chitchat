@@ -118,11 +118,17 @@ class MessageForm extends Component {
     })
   }
 
+  handleKeyPress = (target) => {
+    if(target.charCode === 13){
+      this.handleSubmit()
+    } 
+  }
+
   render() {
     const { errors, message, modal,uploadState , percentuploaded } = this.state
     return (
       <Segment className='message__form' size='small'>
-        <Input value={message} className={errors.some(error => error.message.includes('message')) ? "error" : ""} fluid name='message' onChange={this.handleChange} style={{ marginBottom: '0.7em' }} label={<Button icon={'add'} />} labelPosition='left' placeholder='Write Your Message' />
+        <Input onKeyPress={this.handleKeyPress}  value={message} className={errors.some(error => error.message.includes('message')) ? "error" : ""} fluid name='message' onChange={this.handleChange} style={{ marginBottom: '0.7em' }} label={<Button icon={'add'} />} labelPosition='left' placeholder='Write Your Message' />
         <Button.Group icon widths='2'>
           <Button color='orange' content='Add Reply' labelPosition='left' icon='edit' onClick={this.handleSubmit} />
           <Button color='teal' content='Upload Media' labelPosition='right' icon='cloud upload' onClick={this.openModal} />

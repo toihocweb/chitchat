@@ -17,14 +17,54 @@ class Messages extends Component {
     numUniqueUsers: 0,
     searchTerm: '',
     searchResults: [],
-    searching: false
+    searching: false,
+    isChannelStarred: false,
+    userRef: firebase.database().ref("users")
+  }
+
+  handleStar = () => {
+    this.setState(prevState => ({
+      isChannelStarred: !prevState.isChannelStarred
+    }), () => this.starChannel())
+  }
+
+
+  starChannel = () => {
+    if (this.state.isChannelStarred) {
+      this.state.userRef.child(`${this.state.user.uid}/starred`).update({
+        [this.state.channel.id]: {
+          channelName: this.state.channel.channelName,
+          channelDetails: this.state.channel.channelDetails,
+          createBy: {
+            name: this.state.channel.createBy.name,
+            photoURL: this.state.channel.createBy.photoURL
+          }
+        }
+      })
+    } else {
+      this.state.userRef.child(`${this.state.user.uid}/starred}`).child(this.state.channel.id).remove(err => {
+        if (err !== null) {
+          console.log(err)
+        }
+      })
+    }
   }
 
   componentDidMount() {
     const { channel, user } = this.state
     if (channel && user) {
       this.addListeners(channel.id)
+      this.addUserStarsListener(channel.id, user.uid)
     }
+  }
+  addUserStarsListener = (channelId, userId) => {
+    this.state.userRef.child(userId).child('starred').once('value').then(data => {
+      if (data.val() !== null){
+        const channelids = Object.keys(data.val())
+        const prevStarred = channelids.includes(channelId)
+        this.setState({isChannelStarred : prevStarred})
+      }
+    })
   }
 
   addListeners = channelID => {
@@ -57,10 +97,10 @@ class Messages extends Component {
     const reg = new RegExp(this.state.searchTerm, 'gi')
     const searchResults = channelMessage.reduce((acc, message) => {
       if (
-          (message.content && message.content.match(reg)) ||
-            (message.user.name && message.user.name.match(reg))
-        ) {
-          acc.push(message)
+        (message.content && message.content.match(reg)) ||
+        (message.user.name && message.user.name.match(reg))
+      ) {
+        acc.push(message)
       }
       return acc
     }, [])
@@ -90,10 +130,10 @@ class Messages extends Component {
   )
 
   render() {
-    const { messageRef, channel, user, messages, numUniqueUsers, searchTerm, searchResults, searching } = this.state
+    const { messageRef, channel, user, messages, numUniqueUsers, searchTerm, searchResults, searching, isChannelStarred } = this.state
     return (
       <React.Fragment>
-        <MessagesHeader numUniqueUsers={numUniqueUsers} displayChannelName={this.displayChannelName(channel)} handleSearchChange={this.handleSearchChange} searching={searching} />
+        <MessagesHeader handleStar={this.handleStar} isChannelStarred={isChannelStarred} numUniqueUsers={numUniqueUsers} displayChannelName={this.displayChannelName(channel)} handleSearchChange={this.handleSearchChange} searching={searching} />
         <Segment>
           <Comment.Group className='messages'>
             {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
